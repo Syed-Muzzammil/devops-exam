@@ -1,4 +1,469 @@
 
+
+# 🔬 **EXPERIMENT 1**
+
+## IoT Device Setup and Configuration (Arduino / Raspberry Pi)
+
+### **Aim**
+
+To configure and set up a basic IoT device such as Arduino or Raspberry Pi and verify proper operation by running a sample program.
+
+---
+
+### **Requirements**
+
+* Arduino board / Raspberry Pi
+* USB cable / SD card
+* Arduino IDE / Raspberry Pi OS
+* Computer system
+
+---
+
+### **Theory**
+
+Before developing IoT applications, the hardware platform must be properly configured. This includes installing required software, connecting the device, selecting correct ports, and testing with a basic program.
+
+---
+
+### **Procedure (Arduino)**
+
+1. Download and install Arduino IDE.
+2. Connect Arduino board using USB cable.
+3. Open Arduino IDE → Tools → Board → Select correct board.
+4. Select correct COM port.
+5. Load example program: **Blink**.
+6. Upload the program to the board.
+
+---
+
+### **Source Code (Arduino – Blink)**
+
+```cpp
+void setup() {
+  pinMode(LED_BUILTIN, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(1000);
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(1000);
+}
+```
+
+---
+
+### **Result & Conclusion**
+
+**Result:** The onboard LED blinks continuously.
+**Conclusion:** The IoT device is successfully configured and ready for further experiments.
+
+---
+
+### **Viva Point**
+
+> Device configuration is the first step in IoT system development.
+
+---
+
+---
+
+# 🔬 **EXPERIMENT 2**
+
+## Raspberry Pi Interface with LED Control
+
+### **Aim**
+
+To interface an LED with Raspberry Pi and control it using Python and GPIO pins.
+
+---
+
+### **Requirements**
+
+* Raspberry Pi
+* LED
+* Resistor
+* Python 3
+* RPi.GPIO library
+
+---
+
+### **Theory**
+
+GPIO pins of Raspberry Pi can be programmed to control external devices. By configuring a pin as OUTPUT, digital signals can turn devices ON or OFF.
+
+---
+
+### **Procedure**
+
+1. Boot Raspberry Pi OS.
+2. Connect LED to GPIO 17 with resistor.
+3. Install GPIO library.
+4. Write Python program.
+5. Execute the program.
+
+---
+
+### **Source Code**
+
+```python
+import RPi.GPIO as GPIO
+import time
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+
+LED_PIN = 17
+GPIO.setup(LED_PIN, GPIO.OUT)
+
+try:
+    while True:
+        GPIO.output(LED_PIN, True)
+        time.sleep(1)
+        GPIO.output(LED_PIN, False)
+        time.sleep(1)
+except KeyboardInterrupt:
+    GPIO.cleanup()
+```
+
+---
+
+### **Result & Conclusion**
+
+**Result:** LED turns ON and OFF every second.
+**Conclusion:** Raspberry Pi successfully controls an output device using GPIO.
+
+---
+
+### **Viva Point**
+
+> GPIO pins allow direct hardware control through software.
+
+---
+
+---
+
+# 🔬 **EXPERIMENT 3**
+
+## Raspberry Pi Interface with IR Obstacle Sensor
+
+### **Aim**
+
+To detect the presence of an object using an IR obstacle sensor and display the result.
+
+---
+
+### **Requirements**
+
+* Raspberry Pi
+* IR Sensor
+* Python 3
+
+---
+
+### **Theory**
+
+IR sensors detect obstacles by emitting infrared light and receiving reflected signals. The output is digital (HIGH/LOW).
+
+---
+
+### **Procedure**
+
+1. Connect IR sensor output to GPIO 18.
+2. Configure GPIO as input.
+3. Continuously read sensor output.
+4. Display result on terminal.
+
+---
+
+### **Source Code**
+
+```python
+import RPi.GPIO as GPIO
+import time
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(18, GPIO.IN)
+
+print("IR Sensor Test")
+
+try:
+    while True:
+        if GPIO.input(18) == GPIO.LOW:
+            print("Object Detected")
+        else:
+            print("No Object")
+        time.sleep(0.5)
+except KeyboardInterrupt:
+    GPIO.cleanup()
+```
+
+---
+
+### **Result & Conclusion**
+
+**Result:** Terminal displays object detection status.
+**Conclusion:** Raspberry Pi successfully reads digital sensor input.
+
+---
+
+---
+
+# 🔬 **EXPERIMENT 4**
+
+## Raspberry Pi Interface with Ultrasonic Sensor (HC-SR04)
+
+### **Aim**
+
+To measure distance using an ultrasonic sensor and display it on the terminal.
+
+---
+
+### **Theory**
+
+HC-SR04 works on **time-of-flight principle**. Distance is calculated using speed of sound.
+
+---
+
+### **Procedure**
+
+1. Connect TRIG and ECHO pins.
+2. Send ultrasonic pulse.
+3. Measure echo time.
+4. Calculate distance.
+
+---
+
+### **Source Code**
+
+```python
+import RPi.GPIO as GPIO
+import time
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+
+TRIG = 20
+ECHO = 21
+
+GPIO.setup(TRIG, GPIO.OUT)
+GPIO.setup(ECHO, GPIO.IN)
+
+try:
+    while True:
+        GPIO.output(TRIG, True)
+        time.sleep(0.00001)
+        GPIO.output(TRIG, False)
+
+        while GPIO.input(ECHO) == 0:
+            start = time.time()
+        while GPIO.input(ECHO) == 1:
+            end = time.time()
+
+        distance = (end - start) * 34300 / 2
+        print("Distance = {:.1f} cm".format(distance))
+        time.sleep(0.5)
+except KeyboardInterrupt:
+    GPIO.cleanup()
+```
+
+---
+
+### **Result & Conclusion**
+
+**Result:** Distance displayed in centimeters.
+**Conclusion:** Ultrasonic sensing enables accurate distance measurement.
+
+---
+
+---
+
+# 🔬 **EXPERIMENT 5**
+
+## Raspberry Pi Interface with DHT11 Sensor
+
+### **Aim**
+
+To read temperature and humidity using DHT11 sensor.
+
+---
+
+### **Theory**
+
+DHT11 is a digital sensor providing temperature and humidity values over a single-wire protocol.
+
+---
+
+### **Source Code**
+
+```python
+import RPi.GPIO as GPIO
+import dht11
+import time
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+
+instance = dht11.DHT11(pin=21)
+
+while True:
+    result = instance.read()
+    if result.is_valid():
+        print("Temp: {}°C  Humidity: {}%".format(
+              result.temperature, result.humidity))
+    time.sleep(2)
+```
+
+---
+
+### **Result & Conclusion**
+
+**Result:** Temperature and humidity displayed.
+**Conclusion:** Environmental monitoring using digital sensors is achieved.
+
+---
+
+---
+
+# 🔬 **EXPERIMENT 6**
+
+## Ultrasonic Sensor and Relay Interface
+
+### **Aim**
+
+To control a relay based on distance measured using ultrasonic sensor.
+
+---
+
+### **Source Code**
+
+```python
+import RPi.GPIO as GPIO
+import time
+
+GPIO.setmode(GPIO.BCM)
+
+TRIG = 23
+ECHO = 24
+RELAY = 18
+
+GPIO.setup(TRIG, GPIO.OUT)
+GPIO.setup(ECHO, GPIO.IN)
+GPIO.setup(RELAY, GPIO.OUT)
+
+try:
+    while True:
+        GPIO.output(TRIG, True)
+        time.sleep(0.00001)
+        GPIO.output(TRIG, False)
+
+        while GPIO.input(ECHO) == 0:
+            start = time.time()
+        while GPIO.input(ECHO) == 1:
+            end = time.time()
+
+        distance = (end - start) * 17150
+        GPIO.output(RELAY, GPIO.HIGH if distance < 20 else GPIO.LOW)
+except KeyboardInterrupt:
+    GPIO.cleanup()
+```
+
+---
+
+### **Result & Conclusion**
+
+Relay turns ON when object is close. Demonstrates distance-based automation.
+
+---
+
+---
+
+# 🔬 **EXPERIMENT 7**
+
+## IR Sensor and Relay/Buzzer Interface
+
+### **Aim**
+
+To activate a buzzer when an object is detected using IR sensor.
+
+---
+
+### **Source Code**
+
+```python
+import RPi.GPIO as GPIO
+import time
+
+GPIO.setmode(GPIO.BCM)
+
+IR_PIN = 17
+BUZZER = 27
+
+GPIO.setup(IR_PIN, GPIO.IN)
+GPIO.setup(BUZZER, GPIO.OUT)
+
+try:
+    while True:
+        if GPIO.input(IR_PIN) == GPIO.LOW:
+            GPIO.output(BUZZER, GPIO.HIGH)
+        else:
+            GPIO.output(BUZZER, GPIO.LOW)
+        time.sleep(0.1)
+except KeyboardInterrupt:
+    GPIO.cleanup()
+```
+
+---
+
+### **Result & Conclusion**
+
+Buzzer activates on object detection, confirming alert generation.
+
+---
+
+---
+
+# 🔬 **EXPERIMENT 8**
+
+## DHT11 Sensor and Relay Interface
+
+### **Aim**
+
+To control a relay based on temperature measured using DHT11 sensor.
+
+---
+
+### **Source Code**
+
+```python
+import Adafruit_DHT
+import RPi.GPIO as GPIO
+import time
+
+GPIO.setmode(GPIO.BCM)
+RELAY = 20
+GPIO.setup(RELAY, GPIO.OUT)
+
+sensor = Adafruit_DHT.DHT11
+pin = 21
+
+try:
+    while True:
+        humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
+        if temperature is not None:
+            GPIO.output(RELAY, GPIO.HIGH if temperature > 30 else GPIO.LOW)
+        time.sleep(2)
+except KeyboardInterrupt:
+    GPIO.cleanup()
+```
+
+---
+
+### **Result & Conclusion**
+
+Relay turns ON when temperature exceeds threshold, proving environmental control.
+
+
 ---
 
 # 🔬 **EXPERIMENT 9**
