@@ -1,3 +1,4 @@
+```
 Experiment 2: Raspberry Pi Interface with LED 
 Control 
 AIM: To interface an LED with a Raspberry Pi and control it (turn ON and OFF) using a Python program and GPIO pins.
@@ -463,7 +464,7 @@ void loop() {
   http.end();
 }
 ```
-
+```
 ---
 
 ## **6. Output**
@@ -618,6 +619,7 @@ while True:
 ```
 
 ---
+```
 
 ## **6. Output**
 
@@ -633,3 +635,4 @@ Thus, distance measurement and alert generation using Pico W and HC-SR04 was suc
 
 ---
 
+```
